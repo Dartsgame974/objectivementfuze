@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse "Objectivement" des chaînes YouTube de Fuze</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .channel {
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Analyse "Objectivement" des chaînes YouTube de Fuze</h1>
+    <div id="results"></div>
+
+    <script>
+        fetch('all_channels_stats.json')
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                
+                for (const channel in data) {
+                    const stats = data[channel];
+                    const channelDiv = document.createElement('div');
+                    channelDiv.className = 'channel';
+
+                    const channelTitle = document.createElement('h2');
+                    channelTitle.textContent = `Chaîne : ${channel}`;
+                    channelDiv.appendChild(channelTitle);
+
+                    const totalOccurrences = document.createElement('p');
+                    totalOccurrences.textContent = `Nombre total d'occurrences d'"objectivement" : ${stats.total_occurrences}`;
+                    channelDiv.appendChild(totalOccurrences);
+
+                    const firstOccurrence = document.createElement('p');
+                    firstOccurrence.textContent = `Premier "objectivement" dit sur la chaîne : ${stats.first_occurrence}`;
+                    channelDiv.appendChild(firstOccurrence);
+
+                    const mostOccurrences = document.createElement('p');
+                    mostOccurrences.textContent = `Vidéo avec le plus grand nombre d'occurrences : ${stats.most_occurrences.video_id} (${stats.most_occurrences.count} occurrences)`;
+                    channelDiv.appendChild(mostOccurrences);
+
+                    const graphImg = document.createElement('img');
+                    graphImg.src = `${channel}_graph.png`;
+                    graphImg.alt = `Graphique des occurrences par mois pour la chaîne ${channel}`;
+                    channelDiv.appendChild(graphImg);
+
+                    resultsDiv.appendChild(channelDiv);
+                }
+            })
+            .catch(error => console.error('Error fetching stats:', error));
+    </script>
+</body>
+</html>
